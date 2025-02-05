@@ -25,8 +25,8 @@ public class Epic extends Task {
         identifierConnectionSubTasks.clear();
     }
 
-    public void removeSubTask(int id) {
-        identifierConnectionSubTasks.remove(id);
+    public void removeSubTask(SubTask subTask) {
+        identifierConnectionSubTasks.remove((Integer) subTask.getIdentifier());
     }
 
     @Override

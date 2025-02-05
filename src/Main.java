@@ -21,7 +21,7 @@ public class Main {
         taskManager.addSubTask(subTask3);
 
         System.out.println();
-        System.out.println("-".repeat(10));
+        System.out.println("-".repeat(100));
         System.out.println();
 
         System.out.println(taskManager.getAllTasks());
@@ -49,13 +49,17 @@ public class Main {
         taskManager.upDateSubTask(subTask5);
         taskManager.upDateSubTask(subTask6);
 
-        System.out.print(taskManager.getTask(1));
-        System.out.println(taskManager.getTask(2));
-        System.out.println(taskManager.getEpic(3) + " - " + taskManager.getEpic(3).getStatus());
-        System.out.println(taskManager.getEpic(4) + " - " + taskManager.getEpic(4).getStatus());
-        System.out.println(taskManager.getSubTask(5) + " - " + taskManager.getSubTask(5).getStatus());
-        System.out.println(taskManager.getSubTask(6) + " - " + taskManager.getSubTask(6).getStatus());
-        System.out.println(taskManager.getSubTask(7) + " - " + taskManager.getSubTask(7).getStatus());
+        for (Task allTask : taskManager.getAllTasks()) {
+            System.out.println(allTask + " - " + allTask.getStatus());
+        }
+
+        for (SubTask allSubTask : taskManager.getAllSubTasks()) {
+            System.out.println(allSubTask + " - " + allSubTask.getStatus());
+        }
+
+        for (Epic allEpic : taskManager.getAllEpics()) {
+            System.out.println(allEpic + " - " + allEpic.getStatus());
+        }
 
         taskManager.removeTask(1);
         taskManager.removeEpic(3);

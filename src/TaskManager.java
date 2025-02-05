@@ -76,7 +76,7 @@ public class TaskManager {
     public void upDateSubTask(SubTask newSubTask) {
         subTasks.put(newSubTask.getIdentifier(), newSubTask);
 
-        upDataStatusEpic(epics.get(newSubTask.getIdentifier()));
+        upDataStatusEpic(epics.get(newSubTask.getIdMasterTask()));
     }
 
     public void removeTask(int id) {
@@ -85,7 +85,7 @@ public class TaskManager {
 
     public void removeEpic(int id) {
         for (Integer integer : epics.get(id).getSubTask()) {
-            removeSubtask(integer);
+           subTasks.remove(integer);
         }
 
         epics.remove(id);
@@ -94,8 +94,8 @@ public class TaskManager {
     public void removeSubtask(int id) {
         int identifierMasterEpic = subTasks.get(id).getIdMasterTask();
 
+        epics.get(identifierMasterEpic).removeSubTask(subTasks.get(id));
         subTasks.remove(id);
-        epics.get(identifierMasterEpic).removeSubTask(id);
         upDataStatusEpic(epics.get(identifierMasterEpic));
     }
 
@@ -110,19 +110,24 @@ public class TaskManager {
     }
 
     private void upDataStatusEpic(Epic epic) {
-        int variableForCounting = 0;
+        int variableForCountingDone = 0;
+        int variableForCountingNew = 0;
 
         for (Integer integer : epic.getSubTask()) {
             if (getSubTask(integer).getStatus() == Status.IN_PROGRESS) {
                 epic.setStatus(Status.IN_PROGRESS);
             } else if (getSubTask(integer).getStatus() == Status.DONE) {
-                variableForCounting++;
+                variableForCountingDone++;
 
-                if (variableForCounting == epic.getSubTask().size()) {
+                if (variableForCountingDone == epic.getSubTask().size()) {
                     epic.setStatus(Status.DONE);
                 }
             } else {
-                epic.setStatus(Status.NEW);
+                variableForCountingNew++;
+
+                if (variableForCountingNew == epic.getSubTask().size()) {
+                    epic.setStatus(Status.NEW);
+                }
             }
         }
     }
