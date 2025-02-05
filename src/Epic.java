@@ -1,52 +1,38 @@
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class Epic extends Task {
-    private final HashMap<Integer, SubTask> connectionSubTask;
+    private final ArrayList<Integer> identifierConnectionSubTasks;
 
     public Epic(String name, String description) {
         super(name, description);
-        connectionSubTask = new HashMap<>();
+        identifierConnectionSubTasks = new ArrayList<>();
     }
 
     public Epic(String name, String description, Status status) {
         super(name, description, status);
-        connectionSubTask = new HashMap<>();
+        identifierConnectionSubTasks = new ArrayList<>();
     }
 
     public void addSubTask(SubTask subTask) {
-        int i = 0;
-
-        connectionSubTask.put(subTask.getIdentifier(), subTask);
-
-        for (SubTask value : connectionSubTask.values()) {
-            if (value.getStatus() == Status.IN_PROGRESS) {
-                setStatus(Status.IN_PROGRESS);
-            } else if (value.getStatus() == Status.DONE) {
-                i++;
-                if (i == connectionSubTask.size()) {
-                    setStatus(Status.DONE);
-                }
-            }
-        }
+        identifierConnectionSubTasks.add(subTask.getIdentifier());
     }
 
-    public ArrayList<SubTask> getSubTask() {
-        return new ArrayList<>(connectionSubTask.values());
+    public ArrayList<Integer> getSubTask() {
+        return identifierConnectionSubTasks;
     }
 
-    public void clearSubTasks() {
-        connectionSubTask.clear();
+    public void clearIdentifierConnectionSubTasks() {
+        identifierConnectionSubTasks.clear();
     }
 
-    public void removeSubTaskInEpic(int id) {
-        connectionSubTask.remove(id);
+    public void removeSubTask(int id) {
+        identifierConnectionSubTasks.remove(id);
     }
 
     @Override
     public String toString() {
         return "Epic{" +
-                "connectionSubTask=" + connectionSubTask +
+                "identifierConnectionSubTasks=" + identifierConnectionSubTasks +
                 '}';
     }
 }

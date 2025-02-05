@@ -16,9 +16,9 @@ public class Main {
         SubTask subTask2 = new SubTask("Test6", "SubTask2 in Epic 1", epic1.getIdentifier());
         SubTask subTask3 = new SubTask("Test7", "SubTask3 in Epic 2", epic2.getIdentifier());
 
-        taskManager.addSubTask(3, subTask1);
-        taskManager.addSubTask(3, subTask2);
-        taskManager.addSubTask(4, subTask3);
+        taskManager.addSubTask(subTask1);
+        taskManager.addSubTask(subTask2);
+        taskManager.addSubTask(subTask3);
 
         System.out.println();
         System.out.println("-".repeat(10));
@@ -34,8 +34,8 @@ public class Main {
         task4.setIdentifier(task1.getIdentifier());
         task5.setIdentifier(task2.getIdentifier());
 
-        taskManager.upDateTask(1, task4);
-        taskManager.upDateTask(2, task5);
+        taskManager.upDateTask(task4);
+        taskManager.upDateTask(task5);
 
         SubTask subTask4 = new SubTask("Test8", "upData SubTask1 in Epic 1", subTask1.getIdMasterTask(), Status.IN_PROGRESS);
         SubTask subTask5 = new SubTask("Test9", "upData SubTask2 in Epic 1", subTask2.getIdMasterTask());
@@ -45,9 +45,9 @@ public class Main {
         subTask5.setIdentifier(subTask2.getIdentifier());
         subTask6.setIdentifier(subTask3.getIdentifier());
 
-        taskManager.upDateSubTask(subTask4.getIdentifier(), subTask4);
-        taskManager.upDateSubTask(subTask5.getIdentifier(), subTask5);
-        taskManager.upDateSubTask(subTask6.getIdentifier(), subTask6);
+        taskManager.upDateSubTask(subTask4);
+        taskManager.upDateSubTask(subTask5);
+        taskManager.upDateSubTask(subTask6);
 
         System.out.print(taskManager.getTask(1));
         System.out.println(taskManager.getTask(2));
