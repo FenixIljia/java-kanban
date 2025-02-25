@@ -1,18 +1,27 @@
+import java.util.Objects;
+
 public class Task {
     private final String name;
     private final String description;
     private int identifier;
     private Status status = Status.NEW;
+    private final Variety variety;
 
-    public Task(String name, String description) {
-        this.name = name;
-        this.description = description;
+    public Variety getVariety() {
+        return variety;
     }
 
-    public Task(String name, String description, Status status) {
+    public Task(String name, String description, Variety variety) {
+        this.name = name;
+        this.description = description;
+        this.variety = variety;
+    }
+
+    public Task(String name, String description, Status status, Variety variety) {
         this.name = name;
         this.description = description;
         this.status = status;
+        this.variety = variety;
     }
 
     public String getDescription() {
@@ -44,7 +53,7 @@ public class Task {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Task task = (Task) o;
-        return identifier == task.identifier;
+        return identifier == task.identifier && name == task.name && description == task.description && status == task.status;
     }
 
     @Override
@@ -57,7 +66,7 @@ public class Task {
                 '}';
     }
 
-/*    @Override
+    @Override
     public int hashCode() {
         int hash = 17;
 
@@ -74,5 +83,5 @@ public class Task {
         hash = hash * 31 + Objects.hashCode(identifier);
 
         return hash;
-    }*/
+    }
 }
