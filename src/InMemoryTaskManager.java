@@ -5,7 +5,7 @@ public class InMemoryTaskManager implements TaskManager {
     private final HashMap<Integer, Epic> epics = new HashMap<>();
     private final HashMap<Integer, SubTask> subTasks = new HashMap<>();
     private int identifier = 0;
-    private final HistoryManager historyManager = new InMemoryHistoryManager();
+    private final HistoryManager historyManager = Managers.getDefaultHistory();
 
 
     @Override
@@ -41,19 +41,16 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public ArrayList<Epic> getAllEpics() {
-        upDataHistory(epics.values());
         return new ArrayList<>(epics.values());
     }
 
     @Override
     public ArrayList<Task> getAllTasks() {
-        upDataHistory(tasks.values());
         return new ArrayList<>(tasks.values());
     }
 
     @Override
     public ArrayList<SubTask> getAllSubTasks() {
-        upDataHistory(subTasks.values());
         return new ArrayList<>(subTasks.values());
     }
 
@@ -155,12 +152,6 @@ public class InMemoryTaskManager implements TaskManager {
 
     private void upDataHistory(Task task) {
         historyManager.add(task);
-    }
-
-    private void upDataHistory(Collection<? extends Task> tasks) {
-        for (Task task : tasks) {
-            historyManager.add(task);
-        }
     }
 
     private void upDataStatusEpic(Epic epic) {
