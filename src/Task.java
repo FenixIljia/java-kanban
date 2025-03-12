@@ -80,7 +80,13 @@ public class Task {
             hash = hash + description.hashCode();
         }
 
-        hash = hash * 31 + Objects.hashCode(identifier);
+        hash = hash * 31;
+
+        hash += Objects.hashCode(status);
+
+        hash *= 31;
+
+        hash += Objects.hashCode(variety);
 
         return hash;
     }

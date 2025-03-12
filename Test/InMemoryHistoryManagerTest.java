@@ -3,6 +3,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 class InMemoryHistoryManagerTest {
@@ -181,8 +182,8 @@ class InMemoryHistoryManagerTest {
     @Test
     public void getNotNullAtGetHistoryTask() {
         Task task1 = new Task("Test", "Test", Status.NEW, Variety.TASK);
-        Task task2 = new Task("Test", "Test", Status.NEW, Variety.TASK);
-        Task task3 = new Task("Test", "Test", Status.NEW, Variety.TASK);
+        Task task2 = new Task("Test2", "Test", Status.NEW, Variety.TASK);
+        Task task3 = new Task("Test3", "Test", Status.NEW, Variety.TASK);
 
         taskManager.addTask(task1);
         taskManager.addTask(task2);
@@ -193,9 +194,8 @@ class InMemoryHistoryManagerTest {
         taskManager.getTask(task1.getIdentifier());
         taskManager.getTask(task3.getIdentifier());
 
-        ArrayList<Task> history = new ArrayList<>();
+        List<Task> history = new LinkedList<>();
 
-        history.add(task1);
         history.add(task2);
         history.add(task1);
         history.add(task3);
@@ -220,7 +220,6 @@ class InMemoryHistoryManagerTest {
 
         ArrayList<Task> history = new ArrayList<>();
 
-        history.add(task1);
         history.add(task2);
         history.add(task1);
         history.add(task3);
@@ -248,7 +247,6 @@ class InMemoryHistoryManagerTest {
 
         ArrayList<Task> history = new ArrayList<>();
 
-        history.add(task1);
         history.add(task2);
         history.add(task1);
         history.add(task3);
@@ -298,5 +296,70 @@ class InMemoryHistoryManagerTest {
         taskManager.upDateSubTask(task2);
 
         Assertions.assertEquals(task2, taskManager.getSubTask(task2.getIdentifier()), "Задача должна обновиться");
+    }
+
+    @Test
+    public void getWorksCorrectlyHistoryList() {
+        Task task1 = new Task("Test", "Test", Status.NEW, Variety.TASK);
+        Task task2 = new Task("Test2", "Test", Status.NEW, Variety.TASK);
+        Task task3 = new Task("Test3", "Test", Status.NEW, Variety.TASK);
+
+        taskManager.addTask(task1);
+        taskManager.addTask(task2);
+        taskManager.addTask(task3);
+
+        taskManager.getTask(task1.getIdentifier());
+        taskManager.getTask(task2.getIdentifier());
+        taskManager.getTask(task1.getIdentifier());
+        taskManager.getTask(task3.getIdentifier());
+
+        Assertions.assertEquals(taskManager.getHistory().get(1), task1);
+    }
+
+    @Test
+    public void getNullIdMasterEpicAfterRemoveSubTask() {
+        Epic epic = new Epic("Test", "Test", Status.NEW, Variety.EPIC);
+
+        taskManager.addEpic(epic);
+
+        SubTask task1 = new SubTask("Test", "Test", epic.getIdentifier(), Status.NEW, Variety.SUBTASK);
+
+        taskManager.addSubTask(task1);
+
+        taskManager.removeSubtask(task1.getIdentifier());
+        Integer i = null;
+        Assertions.assertEquals(i, task1.getIdMasterTask());
+    }
+
+    @Test
+    public void getNullAtRemoveSubTask() {
+        Epic epic = new Epic("Test", "Test", Status.NEW, Variety.EPIC);
+
+        taskManager.addEpic(epic);
+
+        SubTask subTask1 = new SubTask("Test", "Test", epic.getIdentifier(), Status.NEW, Variety.SUBTASK);
+        SubTask subTask2 = new SubTask("Test1", "Test1", epic.getIdentifier(), Status.NEW, Variety.SUBTASK);
+        SubTask subTask3 = new SubTask("Test2", "Test2", epic.getIdentifier(), Status.NEW, Variety.SUBTASK);
+        SubTask subTask4 = new SubTask("Test3", "Test3", epic.getIdentifier(), Status.NEW, Variety.SUBTASK);
+        SubTask subTask5 = new SubTask("Test4", "Test4", epic.getIdentifier(), Status.NEW, Variety.SUBTASK);
+        SubTask subTask6 = new SubTask("Test5", "Test5", epic.getIdentifier(), Status.NEW, Variety.SUBTASK);
+        SubTask subTask7 = new SubTask("Test6", "Test6", epic.getIdentifier(), Status.NEW, Variety.SUBTASK);
+
+        taskManager.addSubTask(subTask1);
+        taskManager.addSubTask(subTask2);
+        taskManager.addSubTask(subTask3);
+        taskManager.addSubTask(subTask4);
+        taskManager.addSubTask(subTask5);
+        taskManager.addSubTask(subTask6);
+        taskManager.addSubTask(subTask7);
+
+        Assertions.assertEquals(7, epic.getIdentifierConnectionSubTasks().size());
+
+        taskManager.removeSubtask(subTask1.getIdentifier());
+        taskManager.removeSubtask(subTask7.getIdentifier());
+        taskManager.removeSubtask(subTask5.getIdentifier());
+        taskManager.removeSubtask(subTask3.getIdentifier());
+
+        Assertions.assertEquals(3, epic.getIdentifierConnectionSubTasks().size());
     }
 }
