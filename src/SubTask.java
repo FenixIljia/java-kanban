@@ -1,5 +1,5 @@
 public class SubTask extends Task {
-    private int idMasterTask;
+    private Integer idMasterTask;
 
     public SubTask(String name, String description, int idMasterTask, Variety variety) {
         super(name, description, variety);
@@ -19,8 +19,16 @@ public class SubTask extends Task {
         return null;
     }
 
-    public int getIdMasterTask() {
-        return idMasterTask;
+    public void removeIdMasterTask(Integer idMasterTask) {
+        this.idMasterTask = idMasterTask;
+    }
+
+    public Integer getIdMasterTask() {
+        if (idMasterTask != null) {
+            return idMasterTask;
+        } else {
+            return null;
+        }
     }
 
     @Override

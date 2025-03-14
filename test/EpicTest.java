@@ -1,7 +1,6 @@
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class EpicTest {
     TaskManager taskManager;
@@ -20,6 +19,6 @@ class EpicTest {
 
         final Task saveTask = taskManager.getEpic(taskId);
 
-        assertEquals(epic, saveTask, "Задачи не равны.");
+        Assertions.assertEquals(epic, saveTask, "Задачи не равны.");
     }
 }
