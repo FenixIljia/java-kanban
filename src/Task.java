@@ -53,17 +53,15 @@ public class Task {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Task task = (Task) o;
-        return identifier == task.identifier && name == task.name && description == task.description && status == task.status;
+        return identifier == task.identifier
+                && Objects.equals(name, task.name)
+                && Objects.equals(description, task.description)
+                && status == task.status;
     }
 
     @Override
     public String toString() {
-        return "Task{" +
-                "name='" + name + '\'' +
-                ", description='" + description + '\'' +
-                ", identifier=" + identifier +
-                ", status=" + status +
-                '}';
+        return String.format("%s,%s,%s,%s", variety.toString(), name, status.toString(), description);
     }
 
     @Override
