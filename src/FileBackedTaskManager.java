@@ -26,7 +26,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         ArrayList<Epic> epic = new ArrayList<>();
         ArrayList<SubTask> subTask = new ArrayList<>();
 
-        try (Reader fileReader = new FileReader(file.getFileName().toString())) {
+        try (Reader fileReader = new FileReader(file.toFile())) {
             BufferedReader bufferedReader = new BufferedReader(fileReader);
 
             while (bufferedReader.ready()) {
@@ -64,55 +64,82 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         return fileBackedTaskManager;
     }
 
-    // создает обект типа Task из строки полученную из файла
-    public static Task fromString(String value) {
-        String[] line = value.split(",");
-
-        if (line[0].equals("id")) {
-            return null;
-        }
-
-        Status status = Status.NEW;
-        Variety variety = Variety.TASK;
-
-        switch (line[3]) {
-            case "NEW":
-                break;
-            case "IN_PROGRESS":
-                status = Status.IN_PROGRESS;
-                break;
-            case "DONE":
-                status = Status.DONE;
-                break;
-        }
-
-        switch (line[1]) {
-            case "TASK":
-                break;
-            case "EPIC":
-                variety = Variety.EPIC;
-                break;
-            case "SUBTASK":
-                variety = Variety.SUBTASK;
-                break;
-        }
-
-        if (variety.equals(Variety.SUBTASK)) {
-            SubTask subTask = new SubTask(line[2], line[4], Integer.parseInt(line[5]), status, variety);
-            subTask.setIdentifier(Integer.parseInt(line[0]));
-            return subTask;
-        } else if (variety.equals(Variety.EPIC)) {
-            Epic epic = new Epic(line[2], line[4], status, variety);
-            epic.setIdentifier(Integer.parseInt(line[0]));
-            return epic;
-        } else if (variety.equals(Variety.TASK)) {
-            Task task = new Task(line[2], line[4], status, variety);
-            task.setIdentifier(Integer.parseInt(line[0]));
-            return task;
-        }
-
-        return null;
+    @Override
+    public Task addTask(Task task) {
+        super.addTask(task);
+        save();
+        return task;
     }
+
+    @Override
+    public Task addEpic(Epic epic) {
+        super.addEpic(epic);
+        save();
+        return epic;
+    }
+
+    @Override
+    public Task addSubTask(SubTask subTask) {
+        super.addSubTask(subTask);
+        save();
+        return subTask;
+    }
+
+    @Override
+    public void removeEpic(int id) {
+        super.removeEpic(id);
+        save();
+    }
+
+    @Override
+    public void removeSubtask(int id) {
+        super.removeSubtask(id);
+        save();
+    }
+
+    @Override
+    public void removeTask(int id) {
+        super.removeTask(id);
+        save();
+    }
+
+    @Override
+    public void upDateEpic(Epic newEpic) {
+        super.upDateEpic(newEpic);
+        save();
+    }
+
+    @Override
+    public void upDateSubTask(SubTask newSubTask) {
+        super.upDateSubTask(newSubTask);
+        save();
+    }
+
+    @Override
+    public void upDateTask(Task newTask) {
+        super.upDateTask(newTask);
+        save();
+    }
+
+    @Override
+    public void clearAllEpic() {
+        super.clearAllEpic();
+        save();
+    }
+
+    @Override
+    public void clearAllSubTasks() {
+        super.clearAllSubTasks();
+        save();
+    }
+
+    @Override
+    public void clearAllTasks() {
+        super.clearAllTasks();
+        save();
+    }
+
+    // сохраняет текущее состояние менеджера в указаный файл
 
     public static void main(String[] args) {
         Path file1 = Paths.get(
@@ -198,83 +225,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         System.out.println(subTaskBoolean);
     }
 
-    @Override
-    public Task addTask(Task task) {
-        super.addTask(task);
-        save();
-        return task;
-    }
-
-    @Override
-    public Task addEpic(Epic epic) {
-        super.addEpic(epic);
-        save();
-        return epic;
-    }
-
-    @Override
-    public Task addSubTask(SubTask subTask) {
-        super.addSubTask(subTask);
-        save();
-        return subTask;
-    }
-
-    @Override
-    public void removeEpic(int id) {
-        super.removeEpic(id);
-        save();
-    }
-
-    @Override
-    public void removeSubtask(int id) {
-        super.removeSubtask(id);
-        save();
-    }
-
-    @Override
-    public void removeTask(int id) {
-        super.removeTask(id);
-        save();
-    }
-
-    @Override
-    public void upDateEpic(Epic newEpic) {
-        super.upDateEpic(newEpic);
-        save();
-    }
-
-    @Override
-    public void upDateSubTask(SubTask newSubTask) {
-        super.upDateSubTask(newSubTask);
-        save();
-    }
-
-    @Override
-    public void upDateTask(Task newTask) {
-        super.upDateTask(newTask);
-        save();
-    }
-
-    @Override
-    public void clearAllEpic() {
-        super.clearAllEpic();
-        save();
-    }
-
-    @Override
-    public void clearAllSubTasks() {
-        super.clearAllSubTasks();
-        save();
-    }
-
-    @Override
-    public void clearAllTasks() {
-        super.clearAllTasks();
-        save();
-    }
-
-    // сохраняет текущее состояние менеджера в указаный файл
-    public boolean save() {
+    private void save() {
 
         try (Writer fileWriter = new FileWriter(file.toFile())) {
             fileWriter.write("id,type,name,status,description,epic\n");
@@ -293,7 +244,47 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         } catch (IOException e) {
             throw new ManagerSaveException(e);
         }
+    }
 
-        return true;
+    // создает обект типа Task из строки полученную из файла
+    private static Task fromString(String value) {
+        String[] line = value.split(",");
+
+        if (line[0].equals("id")) {
+            return null;
+        }
+
+        Status status = null;
+        Variety variety = null;
+
+        status = switch (line[3]) {
+            case "NEW" -> Status.NEW;
+            case "IN_PROGRESS" -> Status.IN_PROGRESS;
+            case "DONE" -> Status.DONE;
+            default -> status;
+        };
+
+        variety = switch (line[1]) {
+            case "TASK" -> Variety.TASK;
+            case "EPIC" -> Variety.EPIC;
+            case "SUBTASK" -> Variety.SUBTASK;
+            default -> variety;
+        };
+
+        if (variety.equals(Variety.SUBTASK)) {
+            SubTask subTask = new SubTask(line[2], line[4], Integer.parseInt(line[5]), status, variety);
+            subTask.setIdentifier(Integer.parseInt(line[0]));
+            return subTask;
+        } else if (variety.equals(Variety.EPIC)) {
+            Epic epic = new Epic(line[2], line[4], status, variety);
+            epic.setIdentifier(Integer.parseInt(line[0]));
+            return epic;
+        } else if (variety.equals(Variety.TASK)) {
+            Task task = new Task(line[2], line[4], status, variety);
+            task.setIdentifier(Integer.parseInt(line[0]));
+            return task;
+        }
+
+        return null;
     }
 }

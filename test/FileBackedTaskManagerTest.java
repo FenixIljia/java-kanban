@@ -4,6 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.*;
+import java.nio.file.Files;
 import java.util.ArrayList;
 
 class FileBackedTaskManagerTest {
@@ -28,7 +29,7 @@ class FileBackedTaskManagerTest {
     @Test
     public void getNotNullAtSerialization() {
         Assertions.assertNotNull(fileBackedTaskManager);
-        Assertions.assertTrue(fileBackedTaskManager.save());
+        Assertions.assertTrue(Files.exists(file.toPath()));
     }
 
     @Test
@@ -62,8 +63,7 @@ class FileBackedTaskManagerTest {
         tasks.add(subTask2);
         tasks.add(subTask3);
 
-        ArrayList<Task> newTasks = new ArrayList<>();
-
+/*
         try (Reader reader = new FileReader(file)) {
             BufferedReader br = new BufferedReader(reader);
 
@@ -77,7 +77,14 @@ class FileBackedTaskManagerTest {
             }
         } catch (IOException e) {
             throw new ManagerSaveException(e);
-        }
+        }*/
+
+        FileBackedTaskManager newFileBackedTaskManager = FileBackedTaskManager.loadFromFile(file.toPath());
+
+        ArrayList<Task> newTasks = new ArrayList<>();
+        newTasks.addAll(newFileBackedTaskManager.getAllTasks());
+        newTasks.addAll(newFileBackedTaskManager.getAllEpics());
+        newTasks.addAll(newFileBackedTaskManager.getAllSubTasks());
 
         Assertions.assertEquals(tasks.toString(), newTasks.toString());
     }
