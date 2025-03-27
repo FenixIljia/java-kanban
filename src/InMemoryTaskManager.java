@@ -6,7 +6,7 @@ public class InMemoryTaskManager implements TaskManager {
     private final HashMap<Integer, Task> tasks = new HashMap<>();
     private final HashMap<Integer, Epic> epics = new HashMap<>();
     private final HashMap<Integer, SubTask> subTasks = new HashMap<>();
-    private int identifier = 0;
+    private Integer identifier = 0;
     private final HistoryManager historyManager = Managers.getDefaultHistory();
 
 
@@ -34,8 +34,11 @@ public class InMemoryTaskManager implements TaskManager {
     public Task addSubTask(SubTask subTask) {
         if (Variety.SUBTASK.equals(subTask.getVariety())) {
             subTask.setIdentifier(generationIdentifier());
+
             subTasks.put(subTask.getIdentifier(), subTask);
+
             epics.get(subTask.getIdMasterTask()).addSubTask(subTask);
+
             return subTask;
         }
         return null;
@@ -156,6 +159,22 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public List<Task> getHistory() {
         return historyManager.getHistory();
+    }
+
+    protected HashMap<Integer, SubTask> getSubTasks() {
+        return subTasks;
+    }
+
+    protected HashMap<Integer, Task> getTasks() {
+        return tasks;
+    }
+
+    protected void setIdentifier(Integer identifier) {
+        this.identifier = identifier;
+    }
+
+    protected HashMap<Integer, Epic> getEpics() {
+        return epics;
     }
 
     private void upDataHistory(Task task) {
