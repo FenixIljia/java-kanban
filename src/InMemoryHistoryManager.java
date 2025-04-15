@@ -42,13 +42,13 @@ public class InMemoryHistoryManager implements HistoryManager {
         tail = newNode;
 
         if (oldTail == null) {
+
             head = newNode;
         } else {
             oldTail.next = newNode;
         }
 
         history.put(task.getIdentifier(), newNode);
-        size++;
     }
 
     private void removeNode(Node node) {
@@ -71,6 +71,10 @@ public class InMemoryHistoryManager implements HistoryManager {
     }
 
     private List<Task> getTasks() {
+        if (head == null) {
+            return null;
+        }
+
         List<Task> tasks = new LinkedList<>();
         Node node = head;
 
