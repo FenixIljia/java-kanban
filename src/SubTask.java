@@ -14,6 +14,7 @@ public class SubTask extends Task {
         super(name, description, variety);
         this.idMasterTask = idMasterTask;
     }
+
     public SubTask(
             String name,
             String description,
