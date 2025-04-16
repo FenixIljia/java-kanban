@@ -175,6 +175,10 @@ public class InMemoryTaskManager implements TaskManager {
         return historyManager.getHistory();
     }
 
+    public TreeSet<Task> getPrioritizedTasks() {
+        return sortPrioritizedTasks;
+    }
+
     protected HashMap<Integer, SubTask> getSubTasks() {
         return subTasks;
     }
