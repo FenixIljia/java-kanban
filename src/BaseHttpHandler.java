@@ -13,25 +13,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 public class BaseHttpHandler{
-
-    private final Path file = Paths.get(
-            "D:" +
-                    "\\Программирование" +
-                    "\\Проекты на JavaScript" +
-                    "\\Яндекс Практикум" +
-                    "\\Проект Java Practicum" +
-                    "\\Test.txt");
-    private final Path fileHistory = Paths.get(
-            "D:" +
-                    "\\Программирование" +
-                    "\\Проекты на JavaScript" +
-                    "\\Яндекс Практикум" +
-                    "\\Проект Java Practicum" +
-                    "\\TaskHistory.txt");
-
-    private final FileBackedTaskManager fileBackedTaskManager = FileBackedTaskManager.loadFromFile(file, fileHistory);
-
-    protected void sendText (HttpExchange httpExchange, String text) throws IOException{
+    protected void sendText (HttpExchange httpExchange, String text) throws IOException {
         byte[] resp = text.getBytes(StandardCharsets.UTF_8);
         httpExchange.getResponseHeaders().add("Content-Type", "application/json;charset=utf-8");
         httpExchange.sendResponseHeaders(200, resp.length);
@@ -39,17 +21,17 @@ public class BaseHttpHandler{
         httpExchange.close();
     }
 
-    public void sendNotFound (HttpExchange httpExchange) throws IOException{
+    public void sendNotFound (HttpExchange httpExchange) throws IOException {
         httpExchange.sendResponseHeaders(404, 0);
         httpExchange.close();
     }
 
-    public void sendHasInteractions (HttpExchange httpExchange) throws IOException{
+    public void sendHasInteractions (HttpExchange httpExchange) throws IOException {
         httpExchange.sendResponseHeaders(406, 0);
         httpExchange.close();
     }
 
-    protected void send (HttpExchange httpExchange) throws IOException{
+    protected void send (HttpExchange httpExchange) throws IOException {
         httpExchange.sendResponseHeaders(201, 0);
         httpExchange.close();
     }
