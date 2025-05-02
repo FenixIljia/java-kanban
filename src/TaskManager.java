@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 import java.util.List;
+import java.util.TreeSet;
 
 interface TaskManager {
     Task addTask(Task task);
@@ -41,4 +42,8 @@ interface TaskManager {
     ArrayList<SubTask> getSubTaskSpecificEpic(Integer id);
 
     List<Task> getHistory();
+
+    int getIsEmptyHistory();
+
+    TreeSet<Task> getPrioritizedTasks();
 }

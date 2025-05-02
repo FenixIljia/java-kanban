@@ -8,7 +8,7 @@ public class InMemoryTaskManager implements TaskManager {
     private final HashMap<Integer, Epic> epics = new HashMap<>();
     private final HashMap<Integer, SubTask> subTasks = new HashMap<>();
     private Integer identifier = 1;
-    private final HistoryManager historyManager = Managers.getDefaultHistory();
+    private HistoryManager historyManager = Managers.getDefaultHistory();
     private final TreeSet<Task> sortPrioritizedTasks = new TreeSet<>((Task task1, Task task2) -> {
         if (task1.getStartTime().isBefore(task2.getStartTime())) {
             return -1;
@@ -98,8 +98,12 @@ public class InMemoryTaskManager implements TaskManager {
         }
     }
 
+    public void setHistoryManager(HistoryManager historyManager) {
+        this.historyManager = historyManager;
+    }
+
     @Override
-    public Task getTask(int id) {
+    public Task getTask(int id) throws NullPointerException {
         upDataHistory(tasks.get(id));
         return tasks.get(id);
     }
@@ -175,8 +179,24 @@ public class InMemoryTaskManager implements TaskManager {
         return historyManager.getHistory();
     }
 
+    @Override
+    public int getIsEmptyHistory() {
+        return historyManager.getSize();
+    }
+
+    @Override
     public TreeSet<Task> getPrioritizedTasks() {
         return sortPrioritizedTasks;
+    }
+
+    public void getPrioritizedTasksAtLoading() {
+        for (Task value : tasks.values()) {
+            addInSortPrioritizedTasks(value);
+        }
+
+        for (SubTask value : subTasks.values()) {
+            addInSortPrioritizedTasks(value);
+        }
     }
 
     protected HashMap<Integer, SubTask> getSubTasks() {
@@ -239,12 +259,13 @@ public class InMemoryTaskManager implements TaskManager {
 
     //Добавление задачи в список sortPrioritizedTasks
     private void addInSortPrioritizedTasks(Task task) throws ManagerSaveException {
-        if (sortPrioritizedTasks.isEmpty()) {
-            sortPrioritizedTasks.add(task);
+
+        if (task.getEndTime() == null) {
             return;
         }
 
-        if (task.getStartTime() == null) {
+        if (sortPrioritizedTasks.isEmpty()) {
+            sortPrioritizedTasks.add(task);
             return;
         }
 

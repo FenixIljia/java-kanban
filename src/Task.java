@@ -1,14 +1,17 @@
+import com.google.gson.annotations.JsonAdapter;
+
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
 public class Task {
-    private final String name;
-    private final String description;
+    private String name;
+    private String description;
     private int identifier;
     private Status status;
-    private final Variety variety;
+    private Variety variety;
+    @JsonAdapter(DurationAdapter.class)
     private Duration duration; //продолжительность задачи
     private LocalDateTime startTime; //дата и время, когда предоплагается приступить к заданию
 
@@ -25,6 +28,20 @@ public class Task {
         this.status = Status.NEW;
     }
 
+    public Task(
+            String name,
+            String description,
+            Variety variety,
+            int identifier
+    ) {
+        this.name = name;
+        this.description = description;
+        this.variety = variety;
+        startTime = null;
+        duration = Duration.ofMinutes(0);
+        this.status = Status.NEW;
+        this.identifier = identifier;
+    }
     public Task(
             String name,
             String description,
@@ -55,8 +72,38 @@ public class Task {
         this.startTime = startTime;
     }
 
+    public Task(
+            String name,
+            String description,
+            int identifier,
+            Status status,
+            Variety variety,
+            Duration duration,
+            LocalDateTime startTime
+    ) {
+        this.name = name;
+        this.description = description;
+        this.identifier = identifier;
+        this.status = status;
+        this.variety = variety;
+        this.duration = duration;
+        this.startTime = startTime;
+    }
+
     public LocalDateTime getStartTime() {
         return startTime;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setVariety(Variety variety) {
+        this.variety = variety;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public void setStartTime(LocalDateTime startTime) {

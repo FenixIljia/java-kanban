@@ -35,6 +35,10 @@ public class InMemoryHistoryManager implements HistoryManager {
         }
     }
 
+    public int getSize() {
+        return size;
+    }
+
     private void linkLast(Task task) {
         final Node oldTail = tail;
         final Node newNode = new Node(oldTail, task, null);
@@ -75,7 +79,7 @@ public class InMemoryHistoryManager implements HistoryManager {
             return null;
         }
 
-        List<Task> tasks = new LinkedList<>();
+        LinkedList<Task> tasks = new LinkedList<>();
         Node node = head;
 
         tasks.add(head.data);

@@ -4,7 +4,8 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 public class Epic extends Task {
-    private final ArrayList<SubTask> subTasksEpic;
+    private ArrayList<SubTask> subTasksEpic;
+
     private LocalDateTime endTime;
 
     public Epic(
@@ -13,6 +14,19 @@ public class Epic extends Task {
             Variety variety
     ) {
         super(name, description, variety);
+        subTasksEpic = new ArrayList<>();
+        setStartTime(null);
+        setDuration(null);
+        endTime = null;
+    }
+
+    public Epic(
+            String name,
+            String description,
+            Variety variety,
+            int identifier
+    ) {
+        super(name, description, variety, identifier);
         subTasksEpic = new ArrayList<>();
         setStartTime(null);
         setDuration(null);
@@ -28,6 +42,18 @@ public class Epic extends Task {
             return subTask;
         }
         return null;
+    }
+
+    public ArrayList<SubTask> getSubTasksEpic() {
+        return subTasksEpic;
+    }
+
+    public void setSubTasksEpic(ArrayList<SubTask> subTasksEpic) {
+        this.subTasksEpic = subTasksEpic;
+    }
+
+    public void setEndTime(LocalDateTime endTime) {
+        this.endTime = endTime;
     }
 
     public ArrayList<SubTask> getSubTask() {
@@ -99,5 +125,10 @@ public class Epic extends Task {
                 }
             }
         }
+    }
+
+    @Override
+    public String toString() {
+        return String.format("%d,%s,%s,%s\n", getIdentifier(), getName(), getDescription(), Variety.EPIC);
     }
 }

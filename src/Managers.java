@@ -6,8 +6,8 @@ public class Managers {
         return new InMemoryTaskManager();
     }
 
-    public static FileBackedTaskManager getFileBackedTaskManager(Path file) {
-        return new FileBackedTaskManager(file);
+    public static FileBackedTaskManager getFileBackedTaskManager(Path file, Path fileHistory) {
+        return new FileBackedTaskManager(file, fileHistory);
     }
 
     public static HistoryManager getDefaultHistory() {

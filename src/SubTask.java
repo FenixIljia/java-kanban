@@ -39,6 +39,20 @@ public class SubTask extends Task {
         this.idMasterTask = idMasterTask;
     }
 
+    public SubTask(
+            String name,
+            String description,
+            int idMasterTask,
+            int identifier,
+            Status status,
+            Variety variety,
+            Duration duration,
+            LocalDateTime startTime
+    ) {
+        super(name, description, identifier, status, variety, duration, startTime);
+        this.idMasterTask = idMasterTask;
+    }
+
     public Task setIdMasterTask(Task epic) {
         if (Variety.EPIC.equals(epic.getVariety())) {
             idMasterTask = epic.getIdentifier();
@@ -73,8 +87,8 @@ public class SubTask extends Task {
         return Objects.hash(super.hashCode() * 31, idMasterTask * 31);
     }
 
-    @Override
+/*    @Override
     public String toString() {
         return super.toString() + "," + idMasterTask;
-    }
+    }*/
 }
