@@ -1,7 +1,9 @@
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 public class FileBackedTaskManager extends InMemoryTaskManager {
@@ -139,9 +141,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         save();
     }
 
-    // сохраняет текущее состояние менеджера в указаный файл
-
-    public static void main(String[] args) {
+   /* public static void main(String[] args) {
         Path file1 = Paths.get(
                 "D:\\Программирование\\Проекты на JavaScript\\Яндекс Практикум\\Проект Java Practicum\\Test.txt"
         );
@@ -223,31 +223,11 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         System.out.println(taskBoolean);
         System.out.println(epicBoolean);
         System.out.println(subTaskBoolean);
-    }
-
-    private void save() {
-
-        try (Writer fileWriter = new FileWriter(file.toFile())) {
-            fileWriter.write("id,type,name,status,description,epic\n");
-
-            for (Task task : getAllTasks()) {
-                fileWriter.write(String.format("%d,%s\n", task.getIdentifier(), task));
-            }
-
-            for (Task task : getAllEpics()) {
-                fileWriter.write(String.format("%d,%s\n", task.getIdentifier(), task));
-            }
-
-            for (Task task : getAllSubTasks()) {
-                fileWriter.write(String.format("%d,%s\n", task.getIdentifier(), task));
-            }
-        } catch (IOException e) {
-            throw new ManagerSaveException(e);
-        }
-    }
+    }*/
 
     // создает обект типа Task из строки полученную из файла
     private static Task fromString(String value) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
         String[] line = value.split(",");
 
         if (line[0].equals("id")) {
@@ -272,19 +252,64 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         };
 
         if (variety.equals(Variety.SUBTASK)) {
-            SubTask subTask = new SubTask(line[2], line[4], Integer.parseInt(line[5]), status, variety);
+            SubTask subTask = new SubTask(
+                    line[2],
+                    line[4],
+                    Integer.parseInt(line[8]),
+                    status,
+                    variety,
+                    Duration.ofMinutes(Long.parseLong(line[6])),
+                    LocalDateTime.parse(line[5], formatter)
+            );
             subTask.setIdentifier(Integer.parseInt(line[0]));
             return subTask;
         } else if (variety.equals(Variety.EPIC)) {
-            Epic epic = new Epic(line[2], line[4], status, variety);
+            Epic epic = new Epic(
+                    line[2],
+                    line[4],
+                    variety
+            );
+            epic.setDuration(Duration.ofMinutes(Long.parseLong(line[6])));
+            epic.setStartTime(LocalDateTime.parse(line[5], formatter));
             epic.setIdentifier(Integer.parseInt(line[0]));
             return epic;
         } else if (variety.equals(Variety.TASK)) {
-            Task task = new Task(line[2], line[4], status, variety);
+            Task task = new Task(
+                    line[2],
+                    line[4],
+                    status,
+                    variety,
+                    Duration.ofMinutes(Long.parseLong(line[6])),
+                    LocalDateTime.parse(line[5], formatter)
+            );
             task.setIdentifier(Integer.parseInt(line[0]));
             return task;
         }
 
         return null;
+    }
+
+    // сохраняет текущее состояние менеджера в указаный файл
+    private void save() {
+
+        try (Writer fileWriter = new FileWriter(file.toFile())) {
+            fileWriter.write("id,type,name,status,description,startTime,duration,endTime,epic\n");
+
+            for (Task task : getAllTasks()) {
+                fileWriter.write(String.format(task.toString() + "\n"));
+            }
+
+            for (Epic task : getAllEpics()) {
+                if (!task.getSubTask().isEmpty()) {
+                    fileWriter.write(String.format(task.toString() + "\n"));
+                }
+            }
+
+            for (Task task : getAllSubTasks()) {
+                fileWriter.write(String.format(task.toString() + "\n"));
+            }
+        } catch (IOException e) {
+            throw new ManagerSaveException(e);
+        }
     }
 }

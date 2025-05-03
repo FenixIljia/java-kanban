@@ -2,11 +2,11 @@ import java.nio.file.Path;
 
 public class Managers {
 
-    public TaskManager getDefault() {
+    public static TaskManager getDefault() {
         return new InMemoryTaskManager();
     }
 
-    public TaskManager getFileBackedTaskManager(Path file) {
+    public static FileBackedTaskManager getFileBackedTaskManager(Path file) {
         return new FileBackedTaskManager(file);
     }
 

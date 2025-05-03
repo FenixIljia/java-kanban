@@ -3,11 +3,14 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
+import java.util.List;
 
-class FileBackedTaskManagerTest {
+class FileBackedTaskManagerTest extends TaskManagerTest<FileBackedTaskManager>{
     FileBackedTaskManager fileBackedTaskManager;
     File file;
 
@@ -21,6 +24,12 @@ class FileBackedTaskManagerTest {
         }
     }
 
+    @Override
+    protected void setUp() throws Exception {
+        testFile = File.createTempFile("tasks", ".csv");
+        taskManager = FileBackedTaskManager.loadFromFile(testFile.toPath());
+    }
+
     @AfterEach
     public void after() {
         file.deleteOnExit();
@@ -30,62 +39,29 @@ class FileBackedTaskManagerTest {
     public void getNotNullAtSerialization() {
         Assertions.assertNotNull(fileBackedTaskManager);
         Assertions.assertTrue(Files.exists(file.toPath()));
+        FileBackedTaskManager test = FileBackedTaskManager.loadFromFile(file.toPath());
+        Assertions.assertNotNull(test);
     }
 
     @Test
-    public void getNotNullAtUploadingFromFile() {
+    public void getNotNullAtUploadingFromFile() throws Exception {
+        setUp();
 
-        Task task1 = new Task("Test1", "Task1", Status.NEW, Variety.TASK);
-        Task task2 = new Task("Test2", "Task2", Status.NEW, Variety.TASK);
-        Epic epic1 = new Epic("Test3", "Epic1", Status.NEW, Variety.EPIC);
-        Epic epic2 = new Epic("Test4", "Epic2", Status.NEW, Variety.EPIC);
+        List<Task> expectedTasks = createTestTasks();
 
-        fileBackedTaskManager.addTask(task1);
-        fileBackedTaskManager.addTask(task2);
-        fileBackedTaskManager.addEpic(epic1);
-        fileBackedTaskManager.addEpic(epic2);
+        addAllTasksToManager(expectedTasks);
 
-        SubTask subTask1 = new SubTask("Test5", "SubTask1 in Epic 1", epic1.getIdentifier(), Status.NEW, Variety.SUBTASK);
-        SubTask subTask2 = new SubTask("Test6", "SubTask2 in Epic 1", epic1.getIdentifier(), Status.NEW, Variety.SUBTASK);
-        SubTask subTask3 = new SubTask("Test7", "SubTask3 in Epic 1", epic1.getIdentifier(), Status.NEW, Variety.SUBTASK);
+        List<Task> filteredExpected = expectedTasks.stream()
+                .filter(t -> t.getStartTime() != null)
+                .toList();
 
-        fileBackedTaskManager.addSubTask(subTask1);
-        fileBackedTaskManager.addSubTask(subTask2);
-        fileBackedTaskManager.addSubTask(subTask3);
 
-        ArrayList<Task> tasks = new ArrayList<>();
+        FileBackedTaskManager newManager = FileBackedTaskManager.loadFromFile(testFile.toPath());
 
-        tasks.add(task1);
-        tasks.add(task2);
-        tasks.add(epic1);
-        tasks.add(epic2);
-        tasks.add(subTask1);
-        tasks.add(subTask2);
-        tasks.add(subTask3);
+        List<Task> actualTasks = new ArrayList<>();
+        actualTasks.addAll(newManager.getAllTasks());
+        actualTasks.addAll(newManager.getAllEpics());
+        actualTasks.addAll(newManager.getAllSubTasks());
 
-/*
-        try (Reader reader = new FileReader(file)) {
-            BufferedReader br = new BufferedReader(reader);
-
-            while (br.ready()) {
-                String line = br.readLine();
-                Task task = FileBackedTaskManager.fromString(line);
-
-                if (task != null) {
-                    newTasks.add(task);
-                }
-            }
-        } catch (IOException e) {
-            throw new ManagerSaveException(e);
-        }*/
-
-        FileBackedTaskManager newFileBackedTaskManager = FileBackedTaskManager.loadFromFile(file.toPath());
-
-        ArrayList<Task> newTasks = new ArrayList<>();
-        newTasks.addAll(newFileBackedTaskManager.getAllTasks());
-        newTasks.addAll(newFileBackedTaskManager.getAllEpics());
-        newTasks.addAll(newFileBackedTaskManager.getAllSubTasks());
-
-        Assertions.assertEquals(tasks.toString(), newTasks.toString());
-    }
-}
+        Assertions.assertEquals(filteredExpected.toString(), actualTasks.toString());
+    }}

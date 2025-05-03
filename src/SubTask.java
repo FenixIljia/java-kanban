@@ -1,15 +1,41 @@
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 public class SubTask extends Task {
     private Integer idMasterTask;
 
-    public SubTask(String name, String description, int idMasterTask, Variety variety) {
+    public SubTask(
+            String name,
+            String description,
+            int idMasterTask,
+            Variety variety
+    ) {
         super(name, description, variety);
         this.idMasterTask = idMasterTask;
     }
 
-    public SubTask(String name, String description, int idMasterTask, Status status, Variety variety) {
+    public SubTask(
+            String name,
+            String description,
+            int idMasterTask,
+            Status status,
+            Variety variety
+    ) {
         super(name, description, status, variety);
+        this.idMasterTask = idMasterTask;
+    }
+
+    public SubTask(
+            String name,
+            String description,
+            int idMasterTask,
+            Status status,
+            Variety variety,
+            Duration duration,
+            LocalDateTime startTime
+    ) {
+        super(name, description, status, variety, duration, startTime);
         this.idMasterTask = idMasterTask;
     }
 

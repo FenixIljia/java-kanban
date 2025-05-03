@@ -1,27 +1,87 @@
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
 public class Task {
     private final String name;
     private final String description;
     private int identifier;
-    private Status status = Status.NEW;
+    private Status status;
     private final Variety variety;
+    private Duration duration; //продолжительность задачи
+    private LocalDateTime startTime; //дата и время, когда предоплагается приступить к заданию
 
-    public Variety getVariety() {
-        return variety;
-    }
-
-    public Task(String name, String description, Variety variety) {
+    public Task(
+            String name,
+            String description,
+            Variety variety
+    ) {
         this.name = name;
         this.description = description;
         this.variety = variety;
+        startTime = null;
+        duration = Duration.ofMinutes(0);
+        this.status = Status.NEW;
     }
 
-    public Task(String name, String description, Status status, Variety variety) {
+    public Task(
+            String name,
+            String description,
+            Status status,
+            Variety variety
+    ) {
+        this.name = name;
+        this.description = description;
+        this.variety = variety;
+        startTime = null;
+        duration = Duration.ofMinutes(0);
+        this.status = status;
+    }
+
+    public Task(
+            String name,
+            String description,
+            Status status,
+            Variety variety,
+            Duration duration,
+            LocalDateTime startTime
+    ) {
         this.name = name;
         this.description = description;
         this.status = status;
         this.variety = variety;
+        this.duration = duration;
+        this.startTime = startTime;
+    }
+
+    public LocalDateTime getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(LocalDateTime startTime) {
+        if (startTime == null) {
+            this.startTime = null;
+            return;
+        }
+
+        this.startTime = startTime;
+    }
+
+    public LocalDateTime getEndTime() {
+        return startTime.plus(duration);
+    }
+
+    public Duration getDuration() {
+        return duration;
+    }
+
+    public void setDuration(Duration duration) {
+        this.duration = duration;
+    }
+
+    public Variety getVariety() {
+        return variety;
     }
 
     public String getDescription() {
@@ -61,7 +121,18 @@ public class Task {
 
     @Override
     public String toString() {
-        return String.format("%s,%s,%s,%s", variety.toString(), name, status.toString(), description);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
+        return String.format(
+                "%d,%s,%s,%s,%s,%s,%d,%s",
+                identifier,
+                variety.toString(),
+                name,
+                status.toString(),
+                description,
+                startTime.format(formatter),
+                duration.toMinutes(),
+                getEndTime().format(formatter)
+        );
     }
 
     @Override

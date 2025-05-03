@@ -11,7 +11,7 @@ class ManagersTest {
 
     @Test
     void getNotNullWhenCreatingManagerHistory() {
-        Managers managersHistory = new Managers();
+        HistoryManager managersHistory = Managers.getDefaultHistory();
 
         Assertions.assertNotNull(managersHistory, "Объект менеджера истории должен быть готов к работе");
     }
