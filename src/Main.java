@@ -15,25 +15,25 @@ public class Main {
                         "\\Яндекс Практикум" +
                         "\\Проект Java Practicum" +
                         "\\TaskHistory.txt");
-        FileBackedTaskManager fileBackedTaskManager = FileBackedTaskManager.loadFromFile(file, fileHistory);
-        Epic epic = new Epic("Epic", "Test", Variety.EPIC);
+        Manager.FileBackedTaskManager fileBackedTaskManager = Manager.FileBackedTaskManager.loadFromFile(file, fileHistory);
+        Data.Epic epic = new Data.Epic("Data.Epic", "Test", Data.Variety.EPIC);
         fileBackedTaskManager.addEpic(epic);
-        SubTask subTask = new SubTask(
+        Data.SubTask subTask = new Data.SubTask(
                 "Subtask1",
-                "In Epic",
+                "In Data.Epic",
                 epic.getIdentifier(),
-                Status.NEW,
-                Variety.SUBTASK,
+                Data.Status.NEW,
+                Data.Variety.SUBTASK,
                 Duration.ofMinutes(50),
                 LocalDateTime.of(2000, 1, 2, 2, 2)
         );
         fileBackedTaskManager.addSubTask(subTask);
-        SubTask subTask2 = new SubTask(
+        Data.SubTask subTask2 = new Data.SubTask(
                 "Subtask2",
-                "In Epic",
+                "In Data.Epic",
                 epic.getIdentifier(),
-                Status.NEW,
-                Variety.SUBTASK,
+                Data.Status.NEW,
+                Data.Variety.SUBTASK,
                 Duration.ofMinutes(50),
                 LocalDateTime.of(2002, 1, 2, 2, 2)
         );
@@ -48,24 +48,24 @@ public class Main {
         3,EPIC,Test,Пустой эпик
         4,EPIC,Test,Эпик с подзадачей
 */
-/*        InMemoryTaskManager inMemoryTaskManager = new InMemoryTaskManager();
-        Epic epic = new Epic("Epic", "Test", Variety.EPIC);
+/*        Manager.InMemoryTaskManager inMemoryTaskManager = new Manager.InMemoryTaskManager();
+        Data.Epic epic = new Data.Epic("Data.Epic", "Test", Data.Variety.EPIC);
         inMemoryTaskManager.addEpic(epic);
-        SubTask subTask = new SubTask(
+        Data.SubTask subTask = new Data.SubTask(
                 "Subtask1",
-                "In Epic",
+                "In Data.Epic",
                 epic.getIdentifier(),
-                Status.NEW,
-                Variety.SUBTASK,
+                Data.Status.NEW,
+                Data.Variety.SUBTASK,
                 Duration.ofMinutes(50),
                 LocalDateTime.of(2000, 1, 2, 2,2)
         );
-        SubTask subTask2 = new SubTask(
+        Data.SubTask subTask2 = new Data.SubTask(
                 "Subtask2",
-                "In Epic",
+                "In Data.Epic",
                 epic.getIdentifier(),
-                Status.NEW,
-                Variety.SUBTASK,
+                Data.Status.NEW,
+                Data.Variety.SUBTASK,
                 Duration.ofMinutes(50),
                 LocalDateTime.of(2002, 1, 2, 2,2)
         );
